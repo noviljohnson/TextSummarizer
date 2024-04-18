@@ -17,34 +17,24 @@ from langchain_community.embeddings.sentence_transformer import (
 )
 from langchain_core.documents import Document
 
-class Summer:
-    def __init__(self, userName):
-        self.userName = userName
-    
-    def get_user_details():
-        pass
+import sqlite3
+from flask import Flask
+from flask import Flask, render_template, request, redirect, session
+from flask import jsonify
 
-    def get_vetordb(self, docs):
 
-        if not os.path.exists(f'{self.userName}'):
-            self.vectorDB = Chroma.from_documents(docs, embedding_function, persist_directory="./chroma_db", collection_name=self.userName)
-        else:
-            # load from disk
-            self.vectorDB = Chroma(persist_directory="./chroma_db", embedding_function=embedding_function, collection_name=self.userName)
-            self.vectorDB.add_documents(docs)
+app = Flask(__name__)
 
-# split it into chunks
-text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
-docs = text_splitter.split_documents("text")
+
+@app.route("/", methods=["GET", "POST"])
+def get_my_ip():
+    return request.remote_addr, 200
+
+
+
 
 # create the open-source embedding function
 embedding_function = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")
-
-# save to disk
-
-
-
-# docs = db3.similarity_search(query)
 
 
 checkpoint = "./LaMini-Flan-T5-248M"
@@ -72,6 +62,54 @@ Answer:
 prompt = PromptTemplate.from_template(template)
 
 chain = prompt | hf
+
+
+class Summer:
+    def __init__(self, userName):
+        self.userName = userName
+
+    def create_db(self):
+        conn = sqlite3.connect('UserDb.db')
+        # Creating a cursor object to execute SQL commands
+        cur = conn.cursor()
+        # Creating a table named users with two columns: id and name
+        cur.execute('''
+            CREATE TABLE users (
+                user_id INTEGER PRIMARY KEY,
+                username TEXT NOT NULL UNIQUE,
+                email TEXT NOT NULL UNIQUE,
+                full_name TEXT,
+                password TEXT
+            );
+        ''')
+
+    def get_user_details():
+        pass
+
+    def create_docs(self, user_text, title):
+        # split it into chunks
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=2000, chunk_overlap=200)
+        docs = text_splitter.split_text(user_text)
+        langchain_docs = []
+        for doc in docs:
+            ld = Document(page_content=doc, metadata={
+                "userName" :self.userName,
+                "title" : title
+            })
+
+            langchain_docs.append(ld)
+        return langchain_docs
+
+    def get_vetordb(self, docs):
+
+        if not os.path.exists(f'{self.userName}'):
+            self.vectorDB = Chroma.from_documents(docs, embedding_function, persist_directory="./chroma_db", collection_name=self.userName)
+        else:
+            # load from disk
+            self.vectorDB = Chroma(persist_directory="./chroma_db", embedding_function=embedding_function, collection_name=self.userName)
+            self.vectorDB.add_documents(docs)
+
+
 
 
 
