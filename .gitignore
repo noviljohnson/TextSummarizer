@@ -1,3 +1,4 @@
 LaMini-Flan-T5-248M/
 offload/
 example.db
+chroma_db/
