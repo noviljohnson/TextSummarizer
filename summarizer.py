@@ -73,8 +73,9 @@ title_chain = title_prompt | hf
 Total_users = 0
 
 class Summer:
-    def __init__(self, email=''):
+    def __init__(self, email='', embedding_function=embedding_function):
         self.email = email
+        self.embedding_function = embedding_function
         if not os.path.exists('./UserDb.db'):
             self.create_db()
 
@@ -99,7 +100,7 @@ class Summer:
         conn = sqlite3.connect('UserDb.db')
         cur = conn.cursor()   
         # Creating a cursor object to execute SQL queries
-        cur.execute(f'Select * from users where email = {self.email}')
+        cur.execute(f'''Select * from users where email = "{self.email}"''')
         records = cur.fetchall()
         conn.close()
         return records
@@ -108,10 +109,10 @@ class Summer:
         conn = sqlite3.connect('UserDb.db')
         cur = conn.cursor() 
 
-        cur.execute(f'INSERT INTO users (user_id, email, full_name, password) 
-                    VALUES ({Total_users}, {details[0]}, {details[1]}, {details[2]})')
+        cur.execute(f'''INSERT INTO users ( email, full_name, password) 
+                    VALUES ( '{details["email"]}', '{details["full_name"]}', '{details["password"]}')''')
         
-        Total_users += 1
+        # Total_users += 1
        
         # Committing the changes to the database
         conn.commit()
@@ -132,51 +133,60 @@ class Summer:
             langchain_docs.append(ld)
         return langchain_docs
 
-    def addDocs_2_vetordb(self, docs):
+    def addDocs_2_vetordb(self, docs, id):
 
         if not os.path.exists("./chroma_db"):
-            self.vectorDB = Chroma.from_documents(docs, embedding_function, persist_directory="./chroma_db", collection_name=self.email)
+            self.vectorDB = Chroma.from_documents(docs, embedding_function, persist_directory="./chroma_db", collection_name="collection_"+str(id))
         else:
             # load from disk
-            self.vectorDB = Chroma(persist_directory="./chroma_db", embedding_function=embedding_function, collection_name=self.email)
+            self.vectorDB = Chroma(persist_directory="./chroma_db", embedding_function=embedding_function, collection_name="collection_"+str(id))
             self.vectorDB.add_documents(docs)
 
     def query_VectorDb(self, query):
-        self.vectorDB = Chroma(persist_directory="./chroma_db", embedding_function=embedding_function, collection_name=self.email)
+        self.vectorDB = Chroma(persist_directory="./chroma_db", embedding_function=embedding_function, collection_name="collection_"+str(id))
         docs = self.vectorDB.as_retriever().get_relevant_documents(query)
         return docs
 
 
 @app.route('/login', methods = ['GET'])
 def login():
-    log_details = request.json()
+    login_details = request.get_json()
 
-    obj = Summer(log_details['email'])
+    obj = Summer(login_details['email'])
     user_details = obj.get_user_details()
 
-    if log_details['password'] == user_details[-1]:
+    if len(user_details) == 0:
+        return jsonify({'log': 'No Details Found'})
+    elif login_details['password'] == user_details[0][-1]:
         return jsonify({"log":True})
     else:
-        return jsonify({'log':False}), 200
+        return jsonify({'log':'Wrong Password'}), 200
 
 
 @app.route('/update_user', methods = ['GET'])
 def update_user():
-    update_data = request.json()
+    update_data = request.get_json()
+
     summer_obj = Summer(update_data['email'])
 
-    summer_obj.add_user(update_data)
-
-    return 200
+    # check if the user already exist
+    user_details = summer_obj.get_user_details()
+    if len(user_details) == 0:
+        summer_obj.add_user(update_data)
+    else:
+        return jsonify({'log': 'Exists'})
+    
+    return jsonify({'log':'Added New User Successfully'})
 
 @app.route('/summarize', methods=['GET', 'POST'])
 def get_summary():
-    user_input = request.json()
+    user_input = request.get_json()
     obj = Summer(user_input['email'])
+    user_details = obj.get_user_details()
 
     title = title_chain.invoke({"input_text": user_input['text']})
     docs = obj.create_docs(user_input['text'], title)
-    obj.addDocs_2_vetordb(docs)
+    obj.addDocs_2_vetordb(docs, user_details[0][0])
 
     summary = chain.invoke({"input_text": user_input['text']})
     
