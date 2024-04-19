@@ -242,17 +242,19 @@ def get_summary():
         
     if len(user_input['text']) < 500:
         docs = obj.query_VectorDb(user_input['text'], user_details[0][0])
-        # qa_chain_res = qa_chain({"input_documents": docs, 
-        #                 "question":user_input['text']})
-        
+
         context = ''
         for doc in docs:
             context += doc.page_content
         
-        summary = chain.invoke({"input_text": context})
+        answer = chain.invoke({"input_text": context})
+
+        # qa_chain_res = qa_chain({"input_documents": docs, 
+        #                 "question":user_input['text']})
         # qa_chain_res = qa_chain.invoke({"question": user_input['text'], "context": context})
         
-        print(summary)
+        return jsonify({'summary': summary, 'answer':answer})
+    
     return jsonify({'summary':summary}), 200
 
 

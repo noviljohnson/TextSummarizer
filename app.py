@@ -66,9 +66,15 @@ def main():
             with st.chat_message("assistant"):
                 user_input = {'email':st.session_state["email"], 'text':prompt}
                 res = requests.get(summarizer_url+'/summarize', json=user_input)
+
                 if res.status_code == 200:
-                    st.session_state["assistant_message"] = res.json()['summary']
-                    st.write(st.session_state["assistant_message"])
+
+                    if 'answer' in res.json().keys():
+                        st.session_state["assistant_message"] = res.json()['answer']
+                        st.write(res.json()['answer'])
+                    else:
+                        st.session_state["assistant_message"] = res.json()['summary']
+                        st.write(st.session_state["assistant_message"])
                 else:
                     st.write("Please Try again")
                     st.session_state["assistant_message"] = ""
