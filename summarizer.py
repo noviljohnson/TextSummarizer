@@ -229,9 +229,10 @@ def get_summary():
     obj = Summer(user_input['email'])
     user_details = obj.get_user_details()
 
-    title = title_chain.invoke({"input_text": user_input['text']})
-    docs = obj.create_docs(user_input['text'], title)
-    obj.addDocs_2_vetordb(docs, user_details[0][0])
+    if len(user_input['text']) > 500:
+        title = title_chain.invoke({"input_text": user_input['text']})
+        docs = obj.create_docs(user_input['text'], title)
+        obj.addDocs_2_vetordb(docs, user_details[0][0])
 
     try:
         summary = chain.invoke({"input_text": user_input['text']})
@@ -241,10 +242,17 @@ def get_summary():
         
     if len(user_input['text']) < 500:
         docs = obj.query_VectorDb(user_input['text'], user_details[0][0])
-        qa_chain_res = qa_chain({"input_documents": docs, 
-                        "question":[ user_input['text']]})
+        # qa_chain_res = qa_chain({"input_documents": docs, 
+        #                 "question":user_input['text']})
         
-        print(qa_chain_res['output_text'])
+        context = ''
+        for doc in docs:
+            context += doc.page_content
+        
+        summary = chain.invoke({"input_text": context})
+        # qa_chain_res = qa_chain.invoke({"question": user_input['text'], "context": context})
+        
+        print(summary)
     return jsonify({'summary':summary}), 200
 
 
