@@ -40,15 +40,18 @@ Clone the repository: Clone the repository to your local machine using the follo
 
 
 Create a virtual environment: Create a virtual environment for the project using the following
-Command: `conda create -n envname python=3.10.9`
+Command: 
+`conda create -n envname python=3.10.9`
 
 
 Activate the virtual environment: Activate the virtual environment using the following 
-Command: `conda activate  envname`
+Command: 
+`conda activate  envname`
 
 
 Install the dependencies: Install the required dependencies for the project using the following
-Command: `pip install -r requirements.txt`
+Command: 
+`pip install -r requirements.txt`
 
 
 Run the application: Run the application using the following command:
@@ -87,10 +90,10 @@ Integration Framework : Flask
 
 Summarizer.py contains 
 Langchain pipelines for Text summarization and Q&A
-class - Summer()
-Functions for creating databases (vector and SQL) : create_db(), addDocs_2_vetordb()
-Functions to add new user : add_user()
-Functions to check user credentials : get_user_details()
-Functions to query databases (vector and SQL) : query_VectorDb(), get_user_details()
-Functions to update databases (vector and SQL) : create_docs(), addDocs_2_vetordb()
+class - `Summer()`
+Functions for creating databases (vector and SQL) : `create_db()`, `addDocs_2_vetordb()`
+Functions to add new user : `add_user()`
+Functions to check user credentials : `get_user_details()`
+Functions to query databases (vector and SQL) : `query_VectorDb()`, `get_user_details()`
+Functions to update databases (vector and SQL) : `create_docs()`, `addDocs_2_vetordb()`
 
