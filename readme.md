@@ -38,6 +38,7 @@ Clone the repository: Clone the repository to your local machine using the follo
 
 `git clone https://github.com/noviljohnson/TextSummarizer.git`
 
+Download `LaMini-Flan-T5-248M` from  `https://huggingface.co/MBZUAI/LaMini-Flan-T5-248M/tree/main` and move the folder to the cloned dir.
 
 Create a virtual environment: Create a virtual environment for the project using the following
 Command: 
