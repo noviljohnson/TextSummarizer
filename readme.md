@@ -17,11 +17,11 @@
 
 
 
-Introduction
+### Introduction
 This document provides a brief overview of the AI-powered content summarizer backend, which is a service that leverages AI to summarize content typed by the user. The service is built using Python and Flask as the backend framework, and it interacts with Elasticsearch for storing and retrieving content metadata and uses SQL database for user data management.
 
 
-Repository Structure
+### Repository Structure
 summarizer.py: 
 Contains the Flask application code, including the API endpoints and the integration with the AI model.
 Contains the SQL database models for managing user data.
@@ -32,7 +32,7 @@ app.py: Streamlit code for frontend UI.
 Chroma_db : Vector Database, Contains user input text, embedding and metadata
 UserDb.db : Sqlite Database, Contains user details.
 
-Getting Started
+### Getting Started
 To get started with the project, follow these steps:
 Clone the repository: Clone the repository to your local machine using the following command:
 bash
@@ -58,7 +58,7 @@ Run the application: Run the application using the following command:
 ` streamlit run app.py   # in another cmd`
 
 
-API Endpoints
+### API Endpoints
 The following API endpoints are available in summarizer.py :
 GET / login : Checks credentials of the user to login.
 Inputs : user email, password
@@ -73,13 +73,13 @@ All inputs will be passed in json format
 
 
 
-AI Model Integration
+### AI Model Integration
 The AI models used in this project are the LaMini-Flan-T5-248M and Intel/dynamic_tinybert model from Hugging Face. It is integrated into the application using the transformers library.
 
-Database Integration
+### Database Integration
 The application uses Chroma Vector Database  for storing and retrieving content metadata and uses SQLite3 database for user data management.
 
-Code Quality and Structure
+### Code Quality and Structure
 The code is structured in a way that makes it easy to read and understand. The code is organized into modules, and each module is responsible for a specific functionality. The code is also well-documented, with comments and docstrings that explain the code and its functionality.
 
 LLM Framework : Langchain
