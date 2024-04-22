@@ -52,8 +52,10 @@ Command: pip install -r requirements.txt
 
 
 Run the application: Run the application using the following command:
-> python summarizer.py   # starts flask server
-> streamlit run app.py   # in another cmd
+
+` python summarizer.py   # starts flask server`
+
+` streamlit run app.py   # in another cmd`
 
 
 API Endpoints
