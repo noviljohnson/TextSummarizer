@@ -35,8 +35,8 @@ UserDb.db : Sqlite Database, Contains user details.
 ### Getting Started
 To get started with the project, follow these steps:
 Clone the repository: Clone the repository to your local machine using the following command:
-bash
-git clone https://github.com/noviljohnson/TextSummarizer.git
+
+`git clone https://github.com/noviljohnson/TextSummarizer.git`
 
 
 Create a virtual environment: Create a virtual environment for the project using the following
